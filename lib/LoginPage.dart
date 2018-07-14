@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';//we dont need thisimport as auth.dart is already using that import 
+import 'auth.dart';
 
 class LoginPage extends StatefulWidget {
+
+
+LoginPage({this.auth});
+final BaseAuth auth; 
+
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -9,6 +16,9 @@ class LoginPage extends StatefulWidget {
 enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
+
+
+
   final formKey = new GlobalKey<FormState>();
 
   String _email;
@@ -31,12 +41,17 @@ class _LoginPageState extends State<LoginPage> {
     if (validateAndSave()) {
       try {
         if (_formType == FormType.login) {
-          FirebaseUser user = await FirebaseAuth.instance
-              .signInWithEmailAndPassword(email: _email, password: _password);
-          print('Signed In: ${user.uid}');
+
+          String userId = await widget.auth.SignInWithEmailAndPassword(_email, _password);
+          //FirebaseUser user = await FirebaseAuth.instance
+             // .signInWithEmailAndPassword(email: _email, password: _password);
+          print('Signed In: ${userId}');
         }else{
-          FirebaseUser  user =  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email,password: _password);
-         print('Registerd User: ${user.uid}');
+
+            String userId = await widget.auth.CreateUserWithEmailAndPassword(_email, _password);
+
+      //    FirebaseUser  user =  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email,password: _password);
+         print('Registerd User: ${userId}');
         }
       } catch (e) {
         print('Error: $e');
@@ -61,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(title: new Text('Hrishikesh')),
+      appBar: new AppBar(title: new Text('Campus Buddy  ')),
       body: new Container(
           child: new Form(
         key: formKey,
